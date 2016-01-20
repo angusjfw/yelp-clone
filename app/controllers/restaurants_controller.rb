@@ -1,5 +1,6 @@
 class RestaurantsController < ApplicationController
-  before_action :authenticate_user!, :except => [:index, :show]
+  before_action :authenticate_user!, except: [:index, :show]
+  before_action :check_creator, only: [:edit, :update, :destroy]
 
   def index
     @restaurants = Restaurant.all
@@ -39,7 +40,18 @@ class RestaurantsController < ApplicationController
     redirect_to '/restaurants'
   end
 
+  private
+
   def restaurant_params
-    params.require(:restaurant).permit(:name)
+    new_params = params.require(:restaurant).permit(:name)
+    new_params[:user_id] = current_user.id
+    new_params
+  end
+
+  def check_creator
+    if current_user.id != Restaurant.find(params[:id]).user_id
+      flash[:alert] = 'A restaurant can only be edited by the owner.'
+      redirect_to '/restaurants' and return
+    end
   end
 end
