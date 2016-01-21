@@ -1,14 +1,16 @@
 <% if @restaurants.any? %>
   <% @restaurants.each do |restaurant| %>
-    <%= link_to restaurant.name, restaurant_path(restaurant) %>
-    Average rating: <%= star_rating(restaurant.average_rating) %>/5
+    <h1><%= link_to restaurant.name, restaurant_path(restaurant) %></h1>
+    <h3>Average rating: <%= star_rating(restaurant.average_rating) %></h3>
     <%= link_to "Edit #{restaurant.name}", edit_restaurant_path(restaurant) %>
     <%= link_to "Delete #{restaurant.name}", restaurant_path(restaurant), method: :delete %>
     <% restaurant.reviews.each do |review| %>
       <li>
         <%= review.thoughts %>, <strong><%= review.rating %></strong>/5
+        <p><%= pluralize review.endorsements.count, 'endorsement' %></p>
+        <%= link_to "Endorse review", review_endorsements_path(review), method: :post %>
         <% if review.created_by? current_user %>
-          <%= link_to "Delete review", restaurant_review_path(restaurant, review), method: :delete %>
+          <%= link_to "Delete review", review_path(review), method: :delete %>
         <% end %>
       </li>
     <% end %>
