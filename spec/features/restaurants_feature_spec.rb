@@ -89,7 +89,7 @@ describe 'restaurant features' do
     context 'wrong user is signed in' do
       scenario 'does not allow editing' do
         sign_out
-        sign_up_user('wendy@test.com')
+        sign_up('wendy@test.com')
         visit '/restaurants'
         click_link 'Edit KFC'
         expect(page).to have_content 'A restaurant can only be edited by the owner.'
@@ -113,7 +113,7 @@ describe 'restaurant features' do
     context 'wrong user is signed in' do
       it 'does not allow deleting' do
         sign_out
-        sign_up_user('wendy@test.com')
+        sign_up('wendy@test.com')
         visit '/restaurants'
         click_link 'Edit KFC'
         expect(page).to have_content 'A restaurant can only be edited by the owner.'

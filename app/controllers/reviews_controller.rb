@@ -1,6 +1,6 @@
 class ReviewsController < ApplicationController
   before_action :authenticate_user!
-  before_action :reject_repeat_reviews
+  before_action :reject_repeat_reviews, except: [:destroy]
 
   def new
     @restaurant = Restaurant.find(params[:restaurant_id])
@@ -11,6 +11,17 @@ class ReviewsController < ApplicationController
     @restaurant = Restaurant.find(params[:restaurant_id])
     @restaurant.reviews.create(review_params)
     redirect_to restaurants_path
+  end
+
+  def destroy
+    @review = Review.find(params[:id])
+    if @review.created_by? current_user
+      @review.destroy
+      flash[:notice] = 'Review deleted successfully.'
+    else
+      flash[:alert] = 'You can only delete your own reviews.'
+    end
+    redirect_to '/restaurants'
   end
 
   def review_params
