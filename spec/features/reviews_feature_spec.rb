@@ -2,12 +2,19 @@ require 'rails_helper'
 require 'session_helper'
 
 describe 'reviewing features' do
-	before do
-    create_user('joeb@test.com')
-    Restaurant.create(name: 'KFC', user: User.first)
+  let!(:joe){User.create(email: 'joeb@test.com', 
+                         password: 'password', 
+                         password_confirmation: 'password')}
+  let!(:kfc){Restaurant.create(name: 'KFC', user: joe)}
+
+  feature 'displaying reviews' do
+    scenario 'shows a reviews average rating' do
+      Review.create(restaurant: kfc, rating: 5)
+      Review.create(restaurant: kfc, rating: 3)
+      visit '/restaurants'
+      expect(page).to have_content('Average rating: 4')
+    end
   end
-  let!(:joe){User.first}
-  let!(:kfc){Restaurant.first}
 
   feature 'leaving reviews' do
     scenario 'allows users to leave a review using a form' do
@@ -45,19 +52,19 @@ describe 'reviewing features' do
   end
 
   feature 'deleting reviews' do
-    before do
-      Review.create(user: joe, restaurant: kfc, rating: 5)
+    before(:each) do
+      sign_up 'joebloggs@test.com'
+      create_restaurant(name: 'Joes')
+      leave_review(restaurant_name: 'Joes')
     end
 
     scenario 'deletes a review if its parent restaurant deleted' do
-      sign_in('joeb@test.com')
       visit '/restaurants'
-      click_link 'Delete KFC'
+      click_link 'Delete Joes'
       expect(Review.all).to eq []
     end
 
     scenario 'reviewers can delete their own reviews' do
-      sign_in('joeb@test.com')
       visit '/restaurants'
       click_link 'Delete review'
       expect(Review.all).to eq []
