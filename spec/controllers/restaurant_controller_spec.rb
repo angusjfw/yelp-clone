@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe RestaurantsController, type: :controller do
   describe 'checking user is logged in before adding or editing restaurants' do
-    it { is_expected.to use_before_action :authenicate_user! }
+    it { is_expected.to use_before_action :authenticate_user! }
   end
 
   describe 'checking user is permitted before editing' do

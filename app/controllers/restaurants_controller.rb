@@ -49,7 +49,7 @@ class RestaurantsController < ApplicationController
   end
 
   def check_creator
-    if current_user.id != Restaurant.find(params[:id]).user_id
+    unless Restaurant.find(params[:id]).created_by?(current_user)
       flash[:alert] = 'A restaurant can only be edited by the owner.'
       redirect_to '/restaurants' and return
     end
