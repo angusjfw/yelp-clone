@@ -12,7 +12,7 @@ describe 'reviewing features' do
       Review.create(restaurant: kfc, rating: 5)
       Review.create(restaurant: kfc, rating: 3)
       visit '/restaurants'
-      expect(page).to have_content('Average rating: 4')
+      expect(page).to have_content("Average rating: \u2605\u2605\u2605\u2605\u2606")
     end
   end
 
