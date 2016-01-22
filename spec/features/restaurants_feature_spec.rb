@@ -23,6 +23,17 @@ describe 'restaurant features' do
         expect(page).to have_content('KFC')
         expect(page).not_to have_content('No restaurants yet')
       end
+
+      scenario 'displays restaurant images' do
+        sign_in('joeb@test.com')
+        visit '/restaurants'
+        click_link 'Add a restaurant'
+        fill_in 'Name', with: 'KFC'
+        page.attach_file('Image', Rails.root + 'spec/test_image.png')
+        click_button 'Create Restaurant'
+        expect(current_path).to eq '/restaurants'
+        expect(page).to have_xpath("//img[contains(@src, \"thumb/test_image.png\")]")
+      end
     end
   end
 
@@ -38,7 +49,7 @@ describe 'restaurant features' do
     end
 
     context 'an invalid restaurant' do
-      it 'does not let you submit a name that is too short' do
+      scenario 'does not let you submit a name that is too short' do
         sign_in('joeb@test.com')
         visit '/restaurants'
         click_link 'Add a restaurant'
@@ -50,12 +61,25 @@ describe 'restaurant features' do
     end
 
     context 'user not logged in' do
-      it 'does not let you create restaurants when not logged in' do
+      scenario 'does not let you create restaurants when not logged in' do
         visit '/restaurants'
         click_link 'Add a restaurant'
         expect(page).not_to have_css 'h2', text: 'KFC'
         expect(page).to have_content "You need to sign in or sign up before "\
                                      "continuing." 
+      end
+    end
+
+    feature 'uploading images' do
+      scenario 'adds image to restaurant db record' do
+        sign_in('joeb@test.com')
+        visit '/restaurants'
+        click_link 'Add a restaurant'
+        fill_in 'Name', with: 'KFC'
+        page.attach_file('Image', Rails.root + 'spec/test_image.png')
+        click_button 'Create Restaurant'
+        expect(current_path).to eq '/restaurants'
+        expect(Restaurant.first.image_file_name).not_to be_empty
       end
     end
   end
