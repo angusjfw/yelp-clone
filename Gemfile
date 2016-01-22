@@ -58,4 +58,4 @@ gem 'omniauth-facebook'
 gem 'poltergeist'
 gem 'database_cleaner'
 gem 'paperclip'
-
+gem 'aws-sdk', '< 2.0'
