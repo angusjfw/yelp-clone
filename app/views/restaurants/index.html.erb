@@ -1,12 +1,13 @@
 <% if @restaurants.any? %>
   <% @restaurants.each do |restaurant| %>
     <h1><%= link_to restaurant.name, restaurant_path(restaurant) %></h1>
+    <%= image_tag restaurant.image.url(:thumb) %>
     <h3>Average rating: <%= star_rating(restaurant.average_rating) %></h3>
     <%= link_to "Edit #{restaurant.name}", edit_restaurant_path(restaurant) %>
     <%= link_to "Delete #{restaurant.name}", restaurant_path(restaurant), method: :delete %>
     <% restaurant.reviews.each do |review| %>
       <li>
-        <%= review.thoughts %>, <strong><%= review.rating %></strong>/5
+        <%= review.thoughts %>, <strong><%= review.rating %>/5</strong>
 	<span class="endorsements_count"> 
 	  <%= review.endorsements.count %> 
 	</span>
@@ -23,4 +24,5 @@
   No restaurants yet
 <% end %>
 
+<br><br>
 <a href='/restaurants/new'>Add a restaurant</a>
